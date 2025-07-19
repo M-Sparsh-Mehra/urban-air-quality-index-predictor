@@ -1,2 +1,5 @@
 # urban-air-quality-index-predictor
-An end-to-end machine learning pipeline for multi-step forecasting of Air Quality Index (AQI) using time series models and predicted pollutant concentrations.
+This project presents a full-stack machine learning pipeline to forecast **Air Quality Index (AQI)** using:
+- Multi-step pollutant prediction via **Echo State Networks (ESNs)**
+- Future AQI regression using **XGBoost**
+- Experiment tracking and metric logging with **MLflow**
