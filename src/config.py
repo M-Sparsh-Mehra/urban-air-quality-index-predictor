@@ -2,7 +2,7 @@ import os
 
 # general paths
 DATA_RAW_PATH = "/workspaces/urban-air-quality-index-predictor/data/raw/"
-DATA_PROCESSED_PATH = "/workspaces/urban-air-quality-index-predictor/data/processed/"
+DATA_PROCESSED_PATH = "/workspaces/urban-air-quality-index-predictor/data/processed/processed_data.csv"
 PREDICTIONS_PATH = "/workspaces/urban-air-quality-index-predictor/data/predictions/"
 MODEL_DIR = "/workspaces/urban-air-quality-index-predictor/models/"
 
