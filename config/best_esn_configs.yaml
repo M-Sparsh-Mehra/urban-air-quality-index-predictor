@@ -1,0 +1,32 @@
+CO:
+  n_reservoir: 100
+  sparsity: 0.3
+  spectral_radius: 1.0
+NH3:
+  n_reservoir: 100
+  sparsity: 0.3
+  spectral_radius: 0.9
+'NO':
+  n_reservoir: 100
+  sparsity: 0.1
+  spectral_radius: 1.0
+NO2:
+  n_reservoir: 200
+  sparsity: 0.1
+  spectral_radius: 0.9
+O3:
+  n_reservoir: 100
+  sparsity: 0.3
+  spectral_radius: 0.9
+PM10:
+  n_reservoir: 100
+  sparsity: 0.3
+  spectral_radius: 0.9
+PM2.5:
+  n_reservoir: 200
+  sparsity: 0.1
+  spectral_radius: 1.0
+SO2:
+  n_reservoir: 100
+  sparsity: 0.3
+  spectral_radius: 1.0
