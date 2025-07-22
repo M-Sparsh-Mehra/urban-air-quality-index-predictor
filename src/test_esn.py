@@ -3,8 +3,8 @@ import joblib
 import yaml
 import numpy as np
 import matplotlib.pyplot as mp
-from pyESN import ESN
-from src.config import POLLUTANTS, DATA_PROCESSED_PATH, FORECAST_HORIZON
+from src.pyESN import ESN
+from src.config import POLLUTANTS, DATA_PROCESSED_PATH, FORECAST_HORIZON,MODEL_DIR,LOOKBACK
 
 import pandas as pd
 
@@ -13,23 +13,29 @@ def load_best_configs(config_path="/workspaces/urban-air-quality-index-predictor
         return yaml.safe_load(f)
 
 def load_esn_model(pollutant):
-    model_path = f"models/esn_{pollutant}.pkl"
+    model_path =  os.path.join(MODEL_DIR, f"esn_{pollutant.lower().replace('.', '')}.pkl")
     return joblib.load(model_path)
 
-def predict_ahead(esn, data, horizon=FORECAST_HORIZON):
-    inputs = data[:-horizon]
-    outputs = []
+def predict_ahead(model_dict, data, horizon=FORECAST_HORIZON):
+    """Perform autoregressive forecasting for a pollutant."""
+    esn = model_dict["esn"]
+    scaler_x = model_dict["scaler_x"]
+    scaler_y = model_dict["scaler_y"]
+    lookback = model_dict.get("lookback", LOOKBACK)
 
-    last_input = inputs[-1].reshape(1, -1)
+     # Take the last 'lookback' points as input
+    last_window = data[-lookback:]  # shape: (lookback,)
+    current_input = last_window.reshape(1, -1)  # shape: (1, lookback)
+    current_input = scaler_x.transform(current_input)  # transform only
 
-    for _ in range(horizon):
-        pred = esn.predict(last_input)
-        outputs.append(pred.item())
-        last_input = pred.reshape(1, -1)
+    # Predict in one go (since ESN was trained that way)
+    pred_scaled = esn.predict(current_input)  # shape: (1, forecast_horizon)
+    preds = scaler_y.inverse_transform(pred_scaled).flatten()  # inverse transform output
 
-    return outputs
+    return preds
 
 def test_all_esns():
+    print("updated")
     df = pd.read_csv(DATA_PROCESSED_PATH)
     configs = load_best_configs()
 
@@ -39,18 +45,23 @@ def test_all_esns():
     for pollutant in POLLUTANTS:
         print(f"Predicting for {pollutant}...")
 
-        series = df[pollutant].values.reshape(-1, 1)
-        model = load_esn_model(pollutant)
+        series = df[pollutant].values
 
-        preds = predict_ahead(model, series, horizon=horizon)
-        actual = df[pollutant].values[-horizon:]
+        # Load model
+        model_dict = load_esn_model(pollutant)
 
-        # Plot
+        # Predict next N steps
+        preds = predict_ahead(model_dict, series, horizon=FORECAST_HORIZON)
+
+        # Get ground truth for comparison (actual next values)
+        actual = series[-FORECAST_HORIZON:]
+  
+       # Plotting
         mp.figure(figsize=(8, 4))
-        mp.plot(range(len(actual)), actual, label="Actual")
-        mp.plot(range(len(preds)), preds, label="Predicted", linestyle="--")
-        mp.title(f"{pollutant} Prediction - Next {horizon} steps")
-        mp.xlabel("Time Steps Ahead")
+        mp.plot(range(FORECAST_HORIZON), actual, label="Actual")
+        mp.plot(range(FORECAST_HORIZON), preds, label="Predicted", linestyle="--")
+        mp.title(f"{pollutant} Forecast - Next {FORECAST_HORIZON} Steps")
+        mp.xlabel("Time Step Ahead")
         mp.ylabel(pollutant)
         mp.legend()
         mp.grid(True)
