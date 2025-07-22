@@ -9,7 +9,7 @@ import pandas as pd
 import joblib
 import mlflow
 from itertools import product
-from src.config import FORECAST_HORIZON,POLLUTANTS,DATA_RAW_PATH,DATA_PROCESSED_PATH,MODEL_DIR
+from src.config import FORECAST_HORIZON,POLLUTANTS,DATA_RAW_PATH,DATA_PROCESSED_PATH,MODEL_DIR,LOOKBACK
 from src.train_esn import train_esn_pollutant
 from src.preprocessing import load_raw_data
 
@@ -42,6 +42,7 @@ def run_hyperparams():
                 df=df,
                 feature=pollutant,
                 forecast_horizon=FORECAST_HORIZON,
+                lookback=LOOKBACK
                 n_reservoir=n_res,
                 sparsity=spars,
                 spectral_radius=rho,
