@@ -16,3 +16,4 @@ TARGET_COLUMN = "AQI"
 
 
 FORECAST_HORIZON = 6  # steps ahead to predict ; i want this to be tunable
+LOOKBACK=12 # history window
