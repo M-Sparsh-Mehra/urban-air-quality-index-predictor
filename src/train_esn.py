@@ -9,17 +9,28 @@ from itertools import product
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import root_mean_squared_error, r2_score
 from src.preprocessing import load_raw_data
-from src.config import DATA_RAW_PATH, MODEL_DIR,POLLUTANTS,FORECAST_HORIZON
-import mlflow
+from src.config import DATA_RAW_PATH, MODEL_DIR,POLLUTANTS,FORECAST_HORIZON,LOOKBACK
 import mlflow.sklearn
 
 # trains on specefic feature in the pollutants list
 # this happens for one feature at a time
-def train_esn_pollutant(df, feature, forecast_horizon=FORECAST_HORIZON, n_reservoir=200, sparsity=0.2, spectral_radius=0.95,activation="tanh",return_model=False):
+def train_esn_pollutant(df, feature, forecast_horizon=FORECAST_HORIZON,lookback=LOOKBACK,n_reservoir=200, sparsity=0.2, spectral_radius=0.95,activation="tanh",return_model=False):
+        print("change logged2")
         series = df[feature].values   #time series of that specefic feature
-        n = len(series) - forecast_horizon
-        X = series[:n].reshape(-1, 1) # X will be my first n series values
-        Y = series[forecast_horizon:n+forecast_horizon].reshape(-1, 1) # Y will be all next (forecast horizon) values that have to be predicted
+        
+        X,Y=[],[] # initialise x and y 
+        
+        # Prepare lookback input and horizon output
+        for i in range(len(series) - lookback - forecast_horizon):
+            X.append(series[i:i+lookback])
+            Y.append(series[i+lookback:i+lookback+forecast_horizon])
+        
+        
+        X = np.array(X) # shape: (samples, lookback)
+        Y = np.array(Y)  # shape: (samples, forecast_horizon)
+        
+    
+        #scaling
         scaler_x = MinMaxScaler()
         scaler_y = MinMaxScaler()
         X_scaled = scaler_x.fit_transform(X)
@@ -34,9 +45,13 @@ def train_esn_pollutant(df, feature, forecast_horizon=FORECAST_HORIZON, n_reserv
         # if an active run exists, end it
 
         #set mlflows directry
-        mlflow.set_tracking_uri("/workspaces/urban-air-quality-index-predictor/mlruns")
+        mlflow.set_tracking_uri("file:/workspaces/urban-air-quality-index-predictor/mlruns")
+        mlflow.set_experiment("ESN_Experiments")
+
+        # Ensure no previous run is active
         if mlflow.active_run():
-               mlflow.end_run()
+            mlflow.end_run()
+
         with mlflow.start_run(run_name=f"ESN_{feature}"):
                 mlflow.set_tag("pollutant", feature)
                 mlflow.log_params({
@@ -45,8 +60,8 @@ def train_esn_pollutant(df, feature, forecast_horizon=FORECAST_HORIZON, n_reserv
                 "spectral_radius": spectral_radius})
 
         esn=ESN(
-            n_inputs=1,
-            n_outputs=1,
+            n_inputs=X.shape[1],
+            n_outputs=FORECAST_HORIZON,
             n_reservoir=n_reservoir,
             sparsity=sparsity,
             spectral_radius=spectral_radius,
