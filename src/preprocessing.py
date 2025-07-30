@@ -1,3 +1,11 @@
+"""Implements the preprocessing pipeline for air quality data.
+   This module includes functions to load raw data, process it by filtering, scaling, and handling missing values.
+   The raw data is expected to be in CSV format....saved in "data/raw/raw_data.csv"
+   The processed data is saved in a csv format in "data/processed/processed_data.csv"
+"""
+
+#imports
+
 import os
 import pandas as pd
 import pandas as pd
@@ -21,10 +29,10 @@ def process_data(df):
 
     df = df[df["StationId"] == STATION] # filter by station
 
-    df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+    df["Date"] = pd.to_datetime(df["Date"], errors='coerce') #convert data to numeric and handle errors
     df = df.sort_values(by=["Date"])
 
-    # drops unecesarry columns
+    # drops unecesarry columns/filters relavent columns after EDA
     for col in features:
         if col in set(POLLUTANTS + ["Date", TARGET_COLUMN]):
             continue
@@ -37,9 +45,12 @@ def process_data(df):
             df[col] = pd.to_numeric(df[col], errors='coerce')
 
     
-    #drop NaN in date or target
+    #drops NaN in date or target
     df.dropna(subset=["Date", "AQI"], inplace=True)
+    df.dropna(subset=POLLUTANTS, inplace=True)
 
+    # interpolatess missing values in pollutants
+    # uses linear interpolation and then backfill and forward fill to ensure no NaNs remain
     df[POLLUTANTS] = df[POLLUTANTS].interpolate(method='linear', limit_direction='both').bfill() .ffill()
 
     # Apply MinMax scaling
@@ -61,10 +72,7 @@ def save_processed_data(df, path=DATA_PROCESSED_PATH):
 
 
 
-
-
-
-
+# Main function to run the preprocessing pipeline
 # runs the complete pipeline
 # more often we'll just need to call this
 #returns processed dataframe
