@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 from sklearn.preprocessing import MinMaxScaler
-from src.config import DATA_RAW_PATH,POLLUTANTS,TARGET_COLUMN,features,DATA_PROCESSED_PATH
+from src.config import DATA_RAW_PATH,POLLUTANTS,TARGET_COLUMN,features,DATA_PROCESSED_PATH,STATION
 
 
 # just loads the data as it is and returns as a dataframe
@@ -18,6 +18,9 @@ def load_raw_data(filename):
 # input is a df
 #op is a preprocessed df 
 def process_data(df):
+
+    df = df[df["StationId"] == STATION] # filter by station
+
     df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
     df = df.sort_values(by=["Date"])
 
