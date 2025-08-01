@@ -1,18 +1,18 @@
 NO2:
-  best_r2: 0.6759400075611867
-  best_rmse: 0.02022596626508346
-  n_reservoir: 100
-  sparsity: 0.1
-  spectral_radius: 0.9
+  best_r2: 0.9725000851770075
+  best_rmse: 0.005891993297208892
+  n_reservoir: 200
+  sparsity: 0.2
+  spectral_radius: 0.6
 PM10:
-  best_r2: 0.9780863680388598
-  best_rmse: 0.005902684505574226
-  n_reservoir: 100
-  sparsity: 0.3
+  best_r2: 0.9972526364810792
+  best_rmse: 0.0020900200526690884
+  n_reservoir: 300
+  sparsity: 0.2
   spectral_radius: 0.9
 PM2.5:
-  best_r2: 0.7295684815743736
-  best_rmse: 0.00405988851981661
-  n_reservoir: 100
-  sparsity: 0.1
-  spectral_radius: 0.9
+  best_r2: 0.9956096668654529
+  best_rmse: 0.0005172901309262464
+  n_reservoir: 200
+  sparsity: 0.5
+  spectral_radius: 0.6
