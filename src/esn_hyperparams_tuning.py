@@ -18,8 +18,8 @@ from src.preprocessing import load_raw_data
 
 
 # hyperparams
-N_RESERVOIR_VALUES = [100, 200,50]
-SPARSITY_VALUES = [0.1, 0.3,0.5]
+N_RESERVOIR_VALUES = [100, 200,300]
+SPARSITY_VALUES = [0.1, 0.2,0.5]
 SPECTRAL_RADIUS_VALUES = [0.9, 1.0, 0.6]
 
 
