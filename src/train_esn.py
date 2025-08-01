@@ -90,6 +90,14 @@ def train_esn_pollutant(df, feature, forecast_horizon=FORECAST_HORIZON,lookback=
         train_rmse = root_mean_squared_error(Y_train[0], Y_pred_train[0])
         train_r2 = r2_score(Y_train[0], Y_pred_train[0])
 
+        #############################################################################
+        # debug test block
+
+        print("x_test",X_test)
+
+        #################################################################################
+
+
 
         #plots
         # Plot test predictions
