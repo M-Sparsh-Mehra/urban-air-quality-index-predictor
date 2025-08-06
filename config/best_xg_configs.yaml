@@ -1,0 +1,5 @@
+best_r2: 0.9507571720450325
+best_rmse: 4.627178578228839
+learning_rate: 0.2
+max_depth: 3
+n_estimators: 100
