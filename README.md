@@ -46,12 +46,13 @@ Using the forecasted pollutants as features , I trained an XGBoost regressor to 
 | R2      | 0.951     |
 | RMSE    | 4.63      |
 
-## 🔮 Future Work
+## Recent Work
 
-I am aiming to build a complete air quality forecasting system. Possible extensions include:
+-  Integrated **Streamlit** for an interactive UI to run the AQI forecasting pipeline directly in the browser.
 
-- **📊 Dashboard Integration:**  
-  Develop a real-time interactive dashboard using **Dash**, or **Streamlit**, to visualize pollutant forecasts, AQI predictions, and trends across different horizons.
+- Added *src/app.py* for launching the Streamlit interface.
 
-- **🌐 Web Interface & API Deployment:**  
-  Wrap the entire pipeline into a REST API (using **FastAPI** or **Flask**) for easy integration with front-end web or mobile applications.
+## 🚀 Demo
+Interface can be accessed here on streamlit:
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://urban-air-quality-index-predictor-m-sparsh-mehra.streamlit.app/)
