@@ -62,14 +62,19 @@ st.markdown("""
 """)
 
 
-# sidebar Inputs
-st.sidebar.info("Forecast AQI 10 days ahead using Machine Learning")
-pm25_now = st.sidebar.number_input("Current PM2.5", min_value=0.0, value=55.21)
-pm10_now = st.sidebar.number_input("Current PM10", min_value=0.0, value=128.02)
-no2_now = st.sidebar.number_input("Current NO₂", min_value=0.0, value=17.64)
 
+# Input fields on main page
+with st.container():
+    st.subheader("Enter Current Pollutant Levels")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        pm25_now = st.number_input("Current PM2.5", min_value=0.0, value=55.21)
+    with col2:
+        pm10_now = st.number_input("Current PM10", min_value=0.0, value=128.02)
+    with col3:
+        no2_now = st.number_input("Current NO₂", min_value=0.0, value=17.64)
 
-if st.sidebar.button("Run Forecast"):
+if st.button("Run Forecast", use_container_width=True):
 
 
     # forecast pollutants
