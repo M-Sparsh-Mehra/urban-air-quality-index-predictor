@@ -53,6 +53,34 @@ def forecast_pollutant(model,pollutant_name,current_pollutants):
 
 
 # Streamlit UI
+# centers everything
+st.markdown("""
+    <style>
+    /* Center all main elements */
+    .block-container {
+        text-align: center;
+    }
+    
+    /* Center markdown text */
+    .stMarkdown {
+        text-align: center;
+    }
+
+    /* Center dataframes / tables */
+    table {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    /* Center images */
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 
 st.set_page_config(page_title="Air-Quality-Index Predictor", layout="wide")
 st.title(" Air Quality Index (AQI) Predictor")
@@ -88,14 +116,14 @@ if st.button("Run Forecast", use_container_width=True):
 
     # prepare dataframe
     forecast_df_scaled = pd.DataFrame({
-        "Step": range(1, FORECAST_HORIZON + 1),
+        "Days ahead": range(1, FORECAST_HORIZON + 1),
         "PM2.5": pm25_forecast_scaled,
         "PM10": pm10_forecast_scaled,
         "NO2": no2_forecast_scaled
     })
 
     forecast_df_unscaled = pd.DataFrame({
-        "Step": range(1, FORECAST_HORIZON + 1),
+        "Days ahead": range(1, FORECAST_HORIZON + 1),
         "PM2.5": pm25_forecast_unscaled,
         "PM10": pm10_forecast_unscaled,
         "NO2": no2_forecast_unscaled
@@ -109,16 +137,18 @@ if st.button("Run Forecast", use_container_width=True):
     # display charts
     col1, col2 = st.columns(2)
     with col1:
-        fig_pollutants = px.line(forecast_df_unscaled, x="Step", y=["PM2.5", "PM10", "NO2"], title="Pollutant Forecast")
+        fig_pollutants = px.line(forecast_df_unscaled, x="Days ahead", y=["PM2.5", "PM10", "NO2"], title="Pollutant Forecast")
         st.plotly_chart(fig_pollutants, use_container_width=True)
     with col2:
-        fig_aqi = px.line(forecast_df_scaled, x="Step", y="Predicted AQI", title="AQI Forecast")
+        fig_aqi = px.line(forecast_df_scaled, x="Days ahead", y="Predicted AQI", title="AQI Forecast")
         st.plotly_chart(fig_aqi, use_container_width=True)
 
     forecast_df_unscaled["Predicted AQI"] = aqi_forecast
 
     # show table
-    st.dataframe(forecast_df_unscaled)
+    records = forecast_df_unscaled.to_dict(orient="records")
+    with st.expander("Forecast Data", expanded=True):
+        st.dataframe(records, use_container_width=True)
 
     # download button
     csv = forecast_df_unscaled.to_csv(index=False).encode("utf-8")
