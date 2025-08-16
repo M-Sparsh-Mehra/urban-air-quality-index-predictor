@@ -5,8 +5,8 @@ matplotlib
 seaborn
 scikit-learn
 xgboost
-Flask
+streamlit
 mlflow
 statsmodels
 PyYAML
-
+plotly
