@@ -61,11 +61,14 @@ st.markdown("""
 
 # sidebar Inputs
 st.sidebar.info("Forecast AQI 10 days ahead using Machine Learning")
-pm25_now = st.sidebar.number_input("Current PM2.5", min_value=0.0, value=50.0)
-pm10_now = st.sidebar.number_input("Current PM10", min_value=0.0, value=80.0)
-no2_now = st.sidebar.number_input("Current NO₂", min_value=0.0, value=40.0)
+pm25_now = st.sidebar.number_input("Current PM2.5", min_value=0.0, value=55.21)
+pm10_now = st.sidebar.number_input("Current PM10", min_value=0.0, value=128.02)
+no2_now = st.sidebar.number_input("Current NO₂", min_value=0.0, value=17.64)
+
 
 if st.sidebar.button("Run Forecast"):
+
+
     # forecast pollutants
     current_values = [pm25_now, pm10_now, no2_now]
     pm25_forecast_unscaled,pm25_forecast_scaled = forecast_pollutant(pm25_model, "PM2.5", current_values)
@@ -104,9 +107,18 @@ if st.sidebar.button("Run Forecast"):
         fig_aqi = px.line(forecast_df_scaled, x="Step", y="Predicted AQI", title="AQI Forecast")
         st.plotly_chart(fig_aqi, use_container_width=True)
 
+    forecast_df_unscaled["Predicted AQI"] = aqi_forecast
+
     # show table
     st.dataframe(forecast_df_unscaled)
 
     # download button
     csv = forecast_df_unscaled.to_csv(index=False).encode("utf-8")
     st.download_button("Download Forecast CSV", csv, "aqi_forecast.csv", "text/csv")
+    
+    st.markdown(
+    """
+    ---
+    **Made with ❤️ by [Sparsh](https://github.com/M-Sparsh-Mehra/urban-air-quality-index-predictor)**
+    """
+     )
